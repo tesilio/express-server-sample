@@ -1,4 +1,6 @@
 import CouponModel from '../models/CouponModel';
+import { BadRequestError } from '../middlewares/error';
+import couponMessage from './coupon.message';
 
 const COUPON_COUNT = 5;
 
@@ -49,31 +51,34 @@ export default class IssueCouponService {
    * @param requestBody - 요청 바디
    * @returns {Promise<void>}
    */
-  async exec(requestBody: any) {
-    // todo: requestBody 검증 코드
-    if (!this.isCorrectTime()) {
-      throw new Error('쿠폰 발급 시간이 아닙니다.');
-    }
-
-    try {
-      const issuedCouponCount = await this.getCouponCount();
-
-      if (issuedCouponCount >= COUPON_COUNT) {
-        throw new Error('남은 쿠폰이 없습니다.');
-      }
-
-      const { userId } = requestBody;
-
-      const result = await this.issueCoupon(userId);
-      if (!result) {
-        throw new Error(`사용자 ${userId}는 이미 쿠폰을 받았습니다.`);
-      }
-
-      console.log(`${userId}에게 쿠폰을 발급했습니다.`);
-      // todo: 비동기로 RDBMS에 사용자 쿠폰 발급 정보를 저장하는 코드
-    } catch (e) {
-      console.error(e);
-      throw new Error(`알 수 없는 에러가 발생했습니다.`);
-    }
+  async exec(_requestBody: any) {
+    // todo: 에러 정상 노출 하기
+    throw new BadRequestError(couponMessage.NOT_CORRECT_TIME);
+//    // todo: requestBody 검증 코드
+//    if (!this.isCorrectTime()) {
+//      throw new Error('쿠폰 발급 시간이 아닙니다.');
+//    }
+//
+//    try {
+//      const issuedCouponCount = await this.getCouponCount();
+//
+//      if (issuedCouponCount >= COUPON_COUNT) {
+//        throw new Error('남은 쿠폰이 없습니다.');
+//      }
+//
+//      const { userId } = requestBody;
+//
+//      const result = await this.issueCoupon(userId);
+//      if (!result) {
+//        throw new Error(`사용자 ${userId}는 이미 쿠폰을 받았습니다.`);
+//      }
+//
+//      console.log(`${userId}에게 쿠폰을 발급했습니다.`);
+//      // todo: 비동기로 RDBMS에 사용자 쿠폰 발급 정보를 저장하는 코드
+//    } catch (e) {
+//      console.error(e);
+//      throw new Error(`알 수 없는 에러가 발생했습니다.`);
+//    }
+    return true;
   };
 }

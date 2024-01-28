@@ -1,4 +1,4 @@
-import express, { Express } from 'express';
+import express, { Express, Request, Response, NextFunction } from 'express';
 import Routes from './routes';
 
 export default class Server {
@@ -10,5 +10,9 @@ export default class Server {
   private config(app: Express): void {
     app.use(express.json());
     app.use(express.urlencoded({ extended: true }));
+    app.use((error: any, _request: Request, response: Response, _next: NextFunction) => {
+      console.error(error);
+      response.status(500).json({ message: 'Internal Server Error' });
+    });
   }
 }

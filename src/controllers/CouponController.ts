@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import IssueCouponService from '../services/IssueCouponService';
+import customResponse from '../middlewares/customResponse';
 
 export default class CouponController {
   /**
@@ -8,14 +9,13 @@ export default class CouponController {
    * @param {e.Response} res - 응답 객체
    * @returns {Promise<void>}
    */
-  async issueCoupon(req: Request, res: Response) {
+  async issueCoupon(req: Request, res: Response): Promise<boolean | Error> {
     const issueCouponService = new IssueCouponService();
-    try {
-      const result = await issueCouponService.exec(req.body);
-      res.status(201).json(result);
-    } catch (error) {
-      const { message } = error as any;
-      res.status(500).json({ message: message ?? '알 수 없는 에러가 발생했습니다.' });
-    }
+
+    const { body } = req;
+
+    return issueCouponService.exec(body)
+      .then(customResponse.respondWithCreated(res))
+      .catch(customResponse.handleError(res));
   }
 }
