@@ -1,7 +1,7 @@
 {
-  "name": "redis-queue-sample",
+  "name": "coupon-server-sample",
   "version": "1.0.0",
-  "description": "레디스 큐 샘플",
+  "description": "쿠폰 서버 샘플",
   "main": "server.ts",
   "scripts": {
     "build": "tsc",
