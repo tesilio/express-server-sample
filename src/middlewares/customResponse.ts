@@ -212,7 +212,6 @@ export default {
      * @returns {Error}
      */
     return (err: CustomErrorInterface): Error => {
-      console.log(err);
       // case: 400 ~ 499
       if (!_.inRange(err.status, 400, 499)) {
         err.url = _.get(res, 'req.originalUrl');
