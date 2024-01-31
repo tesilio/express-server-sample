@@ -1,0 +1,6 @@
+{
+  "watchf": ["src"],
+  "ext": "ts",
+  "ignore": ["dist/**/*.js", "src/**/spec/*"],
+  "exec":"ts-node ./src/index.ts"
+}
