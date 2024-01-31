@@ -22,6 +22,8 @@ export default class IssueCouponService {
 
   /**
    * 쿠폰 발급 가능 시간 확인
+   * @returns {boolean}
+   * @private
    */
   private isCorrectTime(): boolean {
     const now = new Date();
@@ -40,7 +42,7 @@ export default class IssueCouponService {
     // todo: requestBody 검증 코드
     // case: 쿠폰 발급 가능 시간이 아닐 경우
     if (!this.isCorrectTime()) {
-      throw new Error('쿠폰 발급 시간이 아닙니다.');
+      throw new BadRequestError(couponMessage.NOT_CORRECT_TIME);
     }
     const { userId } = requestBody;
 
@@ -51,12 +53,12 @@ export default class IssueCouponService {
     if (issuedCount >= COUPON_COUNT) {
       // info: 쿠폰 발급 취소
       await this.couponModel.removeCoupon(userId);
-      throw new Error('남은 쿠폰이 없습니다.');
+      throw new BadRequestError(couponMessage.NOT_ENOUGH_COUPON);
     }
 
-    // case: 이미 쿠폰을 받은 사용자일 경우
-    if (issued) {
-      throw new Error(`사용자 ${userId}는 이미 쿠폰을 받았습니다.`);
+    // case: 이미 쿠폰을 받은 사용자일 경우(false 일 경우)
+    if (!issued) {
+      throw new BadRequestError(couponMessage.USER_HAS_ALREADY_RECEIVED_THE_COUPON);
     }
 
     // todo: RDB 트랜잭션 처리 -> queue 처리

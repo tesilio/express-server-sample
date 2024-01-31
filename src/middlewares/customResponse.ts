@@ -100,7 +100,7 @@ const respondError = (res: Response, err: any): any => {
  * @param {Number=} statusCode        - 응답할 HTTP 상태코드
  * @returns {*}
  */
-const respondDefaultError = (res: Response, err: CustomErrorInterface, statusCode: number) => {
+const respondDefaultError = (res: Response, err: CustomErrorInterface, statusCode?: number) => {
   if (statusCode) {
     err.status = statusCode;
   } else if (_.isNil(err.status)) {
@@ -219,7 +219,7 @@ export default {
       }
       switch (err.name) {
         default:
-          return respondDefaultError(res, err, statusCode || 500);
+          return respondDefaultError(res, err, statusCode);
       }
     };
   },
