@@ -1,6 +1,7 @@
 import CouponModel from '../models/CouponModel';
 import { BadRequestError } from '../middlewares/error';
 import couponMessage from './coupon.message';
+import { RequestIssueCoupon } from '@types';
 
 const COUPON_COUNT = 100;
 
@@ -35,16 +36,15 @@ export default class IssueCouponService {
 
   /**
    * 쿠폰 발급 서비스 실행
-   * @param requestBody - 요청 바디
-   * @returns {Promise<void>}
+   * @param requestIssueCoupon - 쿠폰 발급 요청 정보
+   * @returns {Promise<boolean>}
    */
-  async exec(requestBody: any) {
-    // todo: requestBody 검증 코드
+  async exec(requestIssueCoupon: RequestIssueCoupon): Promise<boolean> {
     // case: 쿠폰 발급 가능 시간이 아닐 경우
     if (!this.isCorrectTime()) {
       throw new BadRequestError(couponMessage.NOT_CORRECT_TIME);
     }
-    const { userId } = requestBody;
+    const { userId } = requestIssueCoupon;
 
     // info: 쿠폰 발급 가능 여부 확인
     const { issuedCount, issued } = await this.couponModel.issuedCountAndIssue(userId);
