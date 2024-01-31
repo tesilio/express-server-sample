@@ -1,5 +1,7 @@
 // @ts-ignore
 import http from 'k6/http';
+// @ts-ignore
+import { uuidv4 } from 'https://jslib.k6.io/k6-utils/1.4.0/index.js';
 
 // init context: k6 옵션을 정의한다.
 export const options = {
@@ -9,9 +11,8 @@ export const options = {
 
 export default function () {
   const url = 'http://[::1]:3000/v1/coupons/issue';
-  const userId = `userId-${Math.floor(Math.random() * 1000000)}`;
   const payload = JSON.stringify({
-    userId,
+    userId: uuidv4(),
   });
 
   const params = {
