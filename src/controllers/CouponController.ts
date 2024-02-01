@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import IssueCouponService from '../services/IssueCouponService';
 import customResponse from '../middlewares/customResponse';
+import { ResponseIssueCoupon } from '@types';
 
 export default class CouponController {
   /**
@@ -9,7 +10,7 @@ export default class CouponController {
    * @param {e.Response} res - 응답 객체
    * @returns {Promise<void>}
    */
-  async issueCoupon(req: Request, res: Response): Promise<boolean | Error> {
+  async issueCoupon(req: Request, res: Response): Promise<ResponseIssueCoupon | Error> {
     const issueCouponService = new IssueCouponService();
 
     const { body } = req;

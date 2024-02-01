@@ -1,7 +1,7 @@
 import CouponModel from '../models/CouponModel';
 import { BadRequestError, InternalServerError, NotFoundError } from '../middlewares/error';
 import couponMessage from './coupon.message';
-import { CouponMetadata, RequestIssueCoupon } from '@types';
+import { CouponMetadata, RequestIssueCoupon, ResponseIssueCoupon } from '@types';
 
 /**
  * 쿠폰 발급 서비스
@@ -106,7 +106,7 @@ export default class IssueCouponService {
    * @param requestIssueCoupon - 쿠폰 발급 요청 정보
    * @returns {Promise<boolean>}
    */
-  async exec(requestIssueCoupon: RequestIssueCoupon): Promise<boolean> {
+  async exec(requestIssueCoupon: RequestIssueCoupon): Promise<ResponseIssueCoupon> {
     // info: 쿠폰 발급 요청 횟수 증가
     this.increaseRequestCount().catch((error) => {
       console.error('쿠폰 발급 요청 횟수 증가 에러:', error);
@@ -134,7 +134,11 @@ export default class IssueCouponService {
     this.increaseIssuedCouponCount().catch((error) => {
       console.error('쿠폰 발급 개수 증가 에러:', error);
     });
+
     // todo: RDB 트랜잭션 처리 -> queue 처리 -> 실제 유효한 로직은 여기서부터!
-    return true;
+
+    return {
+      issued: true,
+    };
   }
 }

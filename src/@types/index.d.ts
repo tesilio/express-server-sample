@@ -3,6 +3,10 @@ declare module '@types' {
     userId: string;
   }
 
+  interface ResponseIssueCoupon {
+    issued: boolean;
+  }
+
   interface CouponMetadata {
     startTime: string;
     endTime: string;
