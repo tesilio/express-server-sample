@@ -1,4 +1,8 @@
 declare module '@types' {
+  interface ResponseIndex {
+    message: string;
+  }
+
   interface RequestIssueCoupon {
     userId: string;
   }

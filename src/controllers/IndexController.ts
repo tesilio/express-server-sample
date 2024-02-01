@@ -1,14 +1,13 @@
 import { Request, Response } from 'express';
+import IndexService from '../services/IndexService';
+import customResponse from '../middlewares/customResponse';
 
 export default class IndexController {
-  async getIndex(_req: Request, res: Response) {
-    try {
-      res.status(200).json({
-        message: 'Hello World',
-      });
-    } catch (error) {
-      const { message } = error as any;
-      res.status(500).json({ message: message ?? '알 수 없는 에러가 발생했습니다.' });
-    }
+  async getIndex(_request: Request, response: Response) {
+    const indexService = new IndexService();
+    return indexService
+      .exec()
+      .then(customResponse.respondWithOK(response))
+      .catch(customResponse.handleError(response));
   }
 }
