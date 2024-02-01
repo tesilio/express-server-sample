@@ -24,9 +24,5 @@ export default class Server {
     app.use(express.json());
     app.use(cors());
     app.use(express.urlencoded({ extended: true }));
-    app.use((error: any, _request: Request, response: Response, _next: NextFunction) => {
-      console.error(error);
-      response.status(500).json({ message: 'Internal Server Error' });
-    });
   }
 }
