@@ -1,8 +1,8 @@
 import { Express, Response } from 'express';
-import indexRoutes from './index.routes';
-import couponRoutes from './coupon.routes';
-import customResponse from '../middlewares/customResponse';
-import { NotFoundError } from '../middlewares/error';
+import indexRoutes from './index/index.routes';
+import couponRoutes from './coupon/coupon.routes';
+import customResponse from './middlewares/customResponse';
+import { NotFoundError } from './middlewares/error';
 
 export default class Routes {
   constructor(app: Express) {

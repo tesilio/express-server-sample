@@ -1,6 +1,6 @@
 import express, { Express, Request, Response, NextFunction } from 'express';
 import cors from 'cors';
-import Routes from './routes';
+import Routes from './route';
 
 /**
  * 서버

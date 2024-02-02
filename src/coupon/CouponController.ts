@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import IssueCouponService from '../services/IssueCouponService';
+import IssueCouponService from './IssueCouponService';
 import customResponse from '../middlewares/customResponse';
 import { ResponseIssueCoupon } from '@types';
 

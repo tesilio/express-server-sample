@@ -1,4 +1,4 @@
-import redisClient from '../db/redisClient';
+import redisClient from '../dbClients/redisClient';
 import Redis from 'ioredis';
 
 const COUPON_SET_KEY = 'coupon:issued-user-id-set';

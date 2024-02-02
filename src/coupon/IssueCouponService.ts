@@ -1,4 +1,4 @@
-import CouponModel from '../models/CouponModel';
+import CouponModel from './CouponModel';
 import { BadRequestError, InternalServerError, NotFoundError } from '../middlewares/error';
 import couponMessage from './coupon.message';
 import { CouponMetadata, RequestIssueCoupon, ResponseIssueCoupon } from '@types';

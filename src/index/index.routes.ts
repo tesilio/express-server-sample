@@ -1,7 +1,5 @@
 import { Router } from 'express';
-import IndexController from '../controllers/IndexController';
-
-const indexController = new IndexController();
+import indexController from './index.controller';
 
 /**
  * 인덱스 라우터

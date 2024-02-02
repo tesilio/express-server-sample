@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import CouponController from '../controllers/CouponController';
+import CouponController from './CouponController';
 
 const couponController = new CouponController();
 
