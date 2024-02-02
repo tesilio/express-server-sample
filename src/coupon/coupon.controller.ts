@@ -1,9 +1,9 @@
 import { Request, Response } from 'express';
-import IssueCouponService from './IssueCouponService';
+import issueCouponService from './issueCoupon.service';
 import customResponse from '../middlewares/customResponse';
 import { ResponseIssueCoupon } from '@types';
 
-export default class CouponController {
+export class CouponController {
   /**
    * 쿠폰 발급 API
    * @param {e.Request} request - 요청 객체
@@ -11,8 +11,6 @@ export default class CouponController {
    * @returns {Promise<void>}
    */
   async issueCoupon(request: Request, response: Response): Promise<ResponseIssueCoupon | Error> {
-    const issueCouponService = new IssueCouponService();
-
     const { body } = request;
 
     // todo: body validation
@@ -22,3 +20,5 @@ export default class CouponController {
       .catch(customResponse.handleError(response));
   }
 }
+
+export default new CouponController();

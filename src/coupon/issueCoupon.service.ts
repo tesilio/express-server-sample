@@ -6,7 +6,7 @@ import { CouponMetadata, RequestIssueCoupon, ResponseIssueCoupon } from '@types'
 /**
  * 쿠폰 발급 서비스
  */
-export default class IssueCouponService {
+export class IssueCouponService {
   private couponModel: CouponModel;
 
   /**
@@ -142,3 +142,5 @@ export default class IssueCouponService {
     };
   }
 }
+
+export default new IssueCouponService();

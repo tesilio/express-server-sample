@@ -1,7 +1,5 @@
 import { Router } from 'express';
-import CouponController from './CouponController';
-
-const couponController = new CouponController();
+import couponController from './coupon.controller';
 
 /**
  * 쿠폰 라우터
