@@ -10,7 +10,7 @@ export const options = {
 };
 
 export default function () {
-  const url = 'http://[::1]:3000/v1/coupons/issue';
+  const url = 'http://[::1]:3000/v1/coupons/issues';
   const payload = JSON.stringify({
     userId: uuidv4(),
   });

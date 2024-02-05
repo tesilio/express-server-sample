@@ -1,23 +1,27 @@
 {
-  "name": "coupon-server-sample",
-  "version": "1.0.0",
-  "description": "쿠폰 서버 샘플",
-  "main": "server.ts",
+  "name": "express-server-sample",
+  "version": "0.0.1",
+  "description": "Express server with typescript",
+  "main": "./src/app.ts",
   "scripts": {
-    "dev": "nodemon --watch \"src/**/*.ts\" --exec ts-node --files ./server.ts",
+    "dev": "nodemon --watch \"src/**/*.ts\" --exec ts-node --files ./src/app.ts",
     "build": "tsc -p .",
-    "start": "node .build/server.js"
+    "start": "node .build/src/app.js"
   },
   "keywords": [],
   "author": "lodcoco@gmail.com",
   "license": "MIT",
   "dependencies": {
     "cors": "^2.8.5",
+    "dotenv": "^16.4.1",
     "express": "^4.18.2",
     "ioredis": "^5.3.2",
     "joi": "^17.12.1",
     "lodash": "^4.17.21",
-    "string-template": "^1.0.0"
+    "reflect-metadata": "^0.2.1",
+    "string-template": "^1.0.0",
+    "typedi": "^0.10.0",
+    "winston": "^3.11.0"
   },
   "devDependencies": {
     "@types/cors": "^2.8.17",
@@ -25,6 +29,7 @@
     "@types/joi": "^17.2.3",
     "@types/lodash": "^4.14.202",
     "@types/node": "^20.11.5",
+    "@types/reflect-metadata": "^0.1.0",
     "@types/string-template": "^1.0.6",
     "@typescript-eslint/eslint-plugin": "^6.19.0",
     "@typescript-eslint/parser": "^6.19.0",

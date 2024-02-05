@@ -1,12 +1,14 @@
-import CouponModel from './CouponModel';
-import { BadRequestError, InternalServerError, NotFoundError } from '../middlewares/error';
-import couponMessage from './coupon.message';
+import CouponModel from '../models/redis/CouponModel';
+import { BadRequestError, NotFoundError } from '../utils/customErrors';
+import couponMessage from '../messages/coupon.message';
 import { CouponMetadata, RequestIssueCoupon, ResponseIssueCoupon } from '@types';
+import { Service } from 'typedi';
 
 /**
  * 쿠폰 발급 서비스
  */
-export class IssueCouponService {
+@Service()
+export default class IssueCouponService {
   private couponModel: CouponModel;
 
   /**
@@ -77,11 +79,7 @@ export class IssueCouponService {
    * @returns {Promise<void>}
    * @private
    */
-  private checkQuantity(
-    alreadyIssuedQuantity: number,
-    quantity: number,
-    userId: string,
-  ): void {
+  private checkQuantity(alreadyIssuedQuantity: number, quantity: number, userId: string): void {
     // case: 쿠폰이 모두 발급되었을 경우
     if (alreadyIssuedQuantity >= quantity) {
       // info: 쿠폰 발급 취소
@@ -142,5 +140,3 @@ export class IssueCouponService {
     };
   }
 }
-
-export default new IssueCouponService();

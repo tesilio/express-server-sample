@@ -1,11 +1,17 @@
-import redisClient from '../dbClients/redisClient';
+import redisClient from '../../loaders/ioredis';
 import Redis from 'ioredis';
 
 const COUPON_SET_KEY = 'coupon:issued-user-id-set';
 
+/**
+ * 쿠폰 모델
+ */
 export default class CouponModel {
   private redisClient: Redis;
 
+  /**
+   * 생성자
+   */
   constructor() {
     this.redisClient = redisClient;
   }

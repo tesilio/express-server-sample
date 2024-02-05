@@ -30,8 +30,8 @@
 import _ from 'lodash';
 import { Request, Response } from 'express';
 
-import errorMessage from './error.message';
-import { CustomErrorInterface, CustomError, UnauthorizedError } from './error';
+import errorMessage from '../messages/error.message';
+import { CustomErrorInterface, CustomError, UnauthorizedError } from './customErrors';
 
 /**
  * JSON 성공 응답

@@ -1,5 +1,5 @@
 declare module '@types' {
-  interface ResponseIndex {
+  interface ResponseIndexHelloWorld {
     message: string;
   }
 
