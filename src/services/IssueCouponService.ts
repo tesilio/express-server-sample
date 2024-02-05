@@ -2,21 +2,21 @@ import CouponModel from '../models/redis/CouponModel';
 import { BadRequestError, NotFoundError } from '../utils/customErrors';
 import couponMessage from '../messages/coupon.message';
 import { CouponMetadata, RequestIssueCoupon, ResponseIssueCoupon } from '@types';
-import { Service } from 'typedi';
+import { Inject, Service } from 'typedi';
+import { Logger } from 'winston';
 
 /**
  * 쿠폰 발급 서비스
  */
 @Service()
 export default class IssueCouponService {
-  private couponModel: CouponModel;
-
   /**
    * 생성자
    */
-  constructor() {
-    this.couponModel = new CouponModel();
-  }
+  constructor(
+    @Inject('CouponModel') private couponModel: CouponModel,
+    @Inject('logger') private logger: Logger,
+  ) {}
 
   /**
    * 요청 횟수 증가
@@ -82,9 +82,9 @@ export default class IssueCouponService {
   private checkQuantity(alreadyIssuedQuantity: number, quantity: number, userId: string): void {
     // case: 쿠폰이 모두 발급되었을 경우
     if (alreadyIssuedQuantity >= quantity) {
-      // info: 쿠폰 발급 취소
+      // info: 쿠폰 발급 취소, todo: 중복 요청 시, 통과되는 경우가 있음
       this.couponModel.cancelIssuing(userId).catch((error) => {
-        console.error('쿠폰 발급 취소 에러:', error);
+        this.logger.error('쿠폰 발급 취소 에러:', error);
       });
       throw new NotFoundError(couponMessage.NOT_ENOUGH_COUPON);
     }
@@ -107,7 +107,7 @@ export default class IssueCouponService {
   async exec(requestIssueCoupon: RequestIssueCoupon): Promise<ResponseIssueCoupon> {
     // info: 쿠폰 발급 요청 횟수 증가
     this.increaseRequestCount().catch((error) => {
-      console.error('쿠폰 발급 요청 횟수 증가 에러:', error);
+      this.logger.error('쿠폰 발급 요청 횟수 증가 에러:', error);
     });
 
     const { startTime, endTime, quantity } = await this.getCouponMetadata();
@@ -130,7 +130,7 @@ export default class IssueCouponService {
 
     // info: 쿠폰 발급 개수 증가
     this.increaseIssuedCouponCount().catch((error) => {
-      console.error('쿠폰 발급 개수 증가 에러:', error);
+      this.logger.error('쿠폰 발급 개수 증가 에러:', error);
     });
 
     // todo: RDB 트랜잭션 처리 -> queue 처리 -> 실제 유효한 로직은 여기서부터!

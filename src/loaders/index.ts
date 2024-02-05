@@ -1,6 +1,7 @@
 import dependencyInjectorLoader from './dependencyInjector';
 import expressLoader from './express';
 import Logger from './logger';
+import CouponModel from '../models/redis/CouponModel';
 
 /**
  * 로더 설정
@@ -8,7 +9,8 @@ import Logger from './logger';
  * @returns {Promise<void>}
  */
 export default async ({ expressApp }: any): Promise<void> => {
-  await dependencyInjectorLoader();
+  const models = [CouponModel];
+  await dependencyInjectorLoader({ models });
   Logger.info('✌️ Dependency Injector loaded');
 
   await expressLoader({ app: expressApp });
