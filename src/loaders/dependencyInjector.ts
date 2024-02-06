@@ -4,10 +4,10 @@ import LoggerInstance from './logger';
 /**
  * Dependency Injector
  */
-export default ({ models }: { models: any[] }): void => {
+export default ({ redisModels }: { redisModels: any[] }): void => {
   try {
-    models.forEach((model) => {
-      Container.set(model.name, new model());
+    redisModels.forEach((redisModel) => {
+      Container.set(redisModel.name, new redisModel());
     });
     Container.set('logger', LoggerInstance);
     LoggerInstance.info('✌️ Injected into container');

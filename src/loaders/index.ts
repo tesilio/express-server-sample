@@ -9,8 +9,8 @@ import CouponModel from '../models/redis/CouponModel';
  * @returns {Promise<void>}
  */
 export default async ({ expressApp }: any): Promise<void> => {
-  const models = [CouponModel];
-  await dependencyInjectorLoader({ models });
+  const redisModels = [CouponModel];
+  await dependencyInjectorLoader({ redisModels });
   Logger.info('✌️ Dependency Injector loaded');
 
   await expressLoader({ app: expressApp });
