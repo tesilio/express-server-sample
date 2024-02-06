@@ -72,22 +72,17 @@ export default class IssueCouponService {
   }
 
   /**
-   * 쿠폰 발급 개수 확인
-   * @param {number} alreadyIssuedQuantity - 이미 발급된 쿠폰 개수
-   * @param {number} quantity - 쿠폰 발급 가능 개수
-   * @param {string} userId - 사용자 아이디
+   * 쿠폰 발급 취소 및 에러 발생
+   * @param {string} userId
    * @returns {Promise<void>}
    * @private
    */
-  private checkQuantity(alreadyIssuedQuantity: number, quantity: number, userId: string): void {
-    // case: 쿠폰이 모두 발급되었을 경우
-    if (alreadyIssuedQuantity >= quantity) {
-      // info: 쿠폰 발급 취소, todo: 중복 요청 시, 통과되는 경우가 있음
-      this.couponModel.cancelIssuing(userId).catch((error) => {
-        this.logger.error('쿠폰 발급 취소 에러:', error);
-      });
-      throw new NotFoundError(couponMessage.NOT_ENOUGH_COUPON);
-    }
+  private async cancelIssuingAndThrowError(userId: string): Promise<void> {
+    // info: 쿠폰 발급 취소
+    this.couponModel.cancelIssuing(userId).catch((error) => {
+      this.logger.error('쿠폰 발급 취소 에러:', error);
+    });
+    throw new NotFoundError(couponMessage.NOT_ENOUGH_COUPON);
   }
 
   /**
@@ -120,10 +115,13 @@ export default class IssueCouponService {
     // info: 쿠폰 발급 가능 여부 확인
     const { alreadyIssuedQuantity, issued } = await this.getAlreadyIssuedQuantityAndIssue(userId);
 
-    // info: 쿠폰 발급 개수 확인
-    this.checkQuantity(alreadyIssuedQuantity, quantity, userId);
+    // case: 쿠폰 발급 가능 개수가 없고, 이 요청에서 쿠폰을 발급받은 사용자일 경우
+    if (alreadyIssuedQuantity >= quantity && issued) {
+      // info: 쿠폰 발급 취소 및 에러 발생
+      await this.cancelIssuingAndThrowError(userId);
+    }
 
-    // case: 이미 쿠폰을 받은 사용자일 경우(false 일 경우)
+    // case: 이미 예전 요청에서 쿠폰을 받은 사용자일 경우
     if (!issued) {
       throw new BadRequestError(couponMessage.USER_HAS_ALREADY_RECEIVED_THE_COUPON);
     }

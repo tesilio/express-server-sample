@@ -28,7 +28,7 @@ export default class CouponModel {
    * 쿠폰 메타데이터 반환
    * @returns {Promise<string | null>}
    */
-  async getCouponMetadata(): Promise<string | null>{
+  async getCouponMetadata(): Promise<string | null> {
     return this.redisClient.get('coupon-metadata');
   }
 
@@ -37,7 +37,10 @@ export default class CouponModel {
    * @param {string} userId
    * @returns {Promise<{ alreadyIssuedQuantity: number; issued: boolean }>}
    */
-  async getAlreadyIssuedQuantityAndIssue(userId: string): Promise<{ alreadyIssuedQuantity: number; issued: boolean }> {
+  async getAlreadyIssuedQuantityAndIssue(userId: string): Promise<{
+    alreadyIssuedQuantity: number;
+    issued: boolean;
+  }> {
     const result = await this.redisClient
       .multi()
       .scard(COUPON_SET_KEY)
