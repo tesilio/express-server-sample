@@ -1,3 +1,4 @@
+jest.mock('ioredis', () => require('ioredis-mock'));
 import IssueCouponService from '../IssueCouponService';
 import CouponModel from '../../models/redis/CouponModel';
 import { Logger } from 'winston';

@@ -5,5 +5,5 @@
 - [x] [선착순 쿠폰 발급](src/services/IssueCouponService.ts)(Redis)
   - [x] 단일 노드로 TPS 1,200 까지 확인
   - [x] 중복 유저 아이디로 발급 요청 시, 중복 발급 문제 해결
-  - [ ] 테스트코드
+  - [x] 테스트코드
   - [ ] Redis Queue 사용하여 RDB 에 저장
