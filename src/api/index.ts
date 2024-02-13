@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import v1Index from './v1';
+import v1Index from './v1/index';
 import v1Coupons from './v1/coupons';
 
 const app = Router();

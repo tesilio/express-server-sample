@@ -1,7 +1,7 @@
 import { Router, Request, Response, NextFunction } from 'express';
 import { Container } from 'typedi';
-import IndexServiceService from '../../services/IndexService';
-import customResponse from '../../utils/customResponse';
+import IndexServiceService from '../../../services/IndexService';
+import customResponse from '../../../utils/customResponse';
 
 /**
  * 인덱스 라우터 설정
