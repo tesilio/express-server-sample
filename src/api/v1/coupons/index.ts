@@ -20,7 +20,6 @@ export default (app: Router) => {
     couponIssueBodyValidator,
     async (request: Request, response: Response, _next: NextFunction) => {
       const validateErrors = validationResult(request);
-      console.log(validateErrors); // todo: 미들웨어 처리
       const issueCouponService = Container.get(IssueCouponService);
       return issueCouponService
         .exec(request.body)
