@@ -31,7 +31,7 @@
     "@types/jest": "^29.5.14",
     "@types/joi": "^17.2.3",
     "@types/lodash": "^4.17.13",
-    "@types/node": "^20.17.9",
+    "@types/node": "^20.17.10",
     "@types/reflect-metadata": "^0.1.0",
     "@types/string-template": "^1.0.6",
     "@typescript-eslint/eslint-plugin": "^6.21.0",
