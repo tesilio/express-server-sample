@@ -1,7 +1,13 @@
 import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
+import helmet from 'helmet';
+import compression from 'compression';
+import { rateLimit } from 'express-rate-limit';
 import createApiRoutes from '../api';
 import { NotFoundError, BaseHttpError } from '../utils/customErrors';
+import requestIdMiddleware from '../middlewares/requestId';
+import requestLoggerMiddleware from '../middlewares/requestLogger';
+import setupSwagger from './swagger';
 import IndexService from '../services/IndexService';
 import IssueCouponService from '../services/IssueCouponService';
 
@@ -11,10 +17,32 @@ interface ExpressLoaderDeps {
   issueCouponService: IssueCouponService;
 }
 
+const couponRateLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  limit: 10,
+  standardHeaders: 'draft-7',
+  legacyHeaders: false,
+  message: {
+    error: {
+      status: 429,
+      name: 'TooManyRequestsError',
+      message: '요청이 너무 많습니다. 잠시 후 다시 시도해주세요.',
+      errorCode: 'ERR000007',
+      data: null,
+    },
+  },
+});
+
 const expressLoader = ({ app, indexService, issueCouponService }: ExpressLoaderDeps): void => {
+  app.use(helmet());
+  app.use(compression());
   app.use(cors());
-  app.use(express.json());
+  app.use(express.json({ limit: '10kb' }));
   app.use(express.urlencoded({ extended: true }));
+  app.use(requestIdMiddleware);
+  app.use(requestLoggerMiddleware);
+
+  setupSwagger(app);
 
   app.get('/status', (_req, res) => {
     res.status(200).end();
@@ -23,6 +51,7 @@ const expressLoader = ({ app, indexService, issueCouponService }: ExpressLoaderD
     res.status(200).end();
   });
 
+  app.use('/v1/coupons', couponRateLimiter);
   app.use('/', createApiRoutes({ indexService, issueCouponService }));
 
   app.all('/*', (_req: Request, _res: Response, next: NextFunction) => {

@@ -1,0 +1,11 @@
+node_modules
+.build
+.git
+.gitignore
+.env
+.idea
+.omc
+.claude
+*.md
+stressTest.js
+k6/

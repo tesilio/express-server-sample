@@ -3,23 +3,34 @@ import { BadRequestError, NotFoundError } from '../utils/customErrors';
 import couponMessage from '../messages/coupon.message';
 import { CouponMetadata, RequestIssueCoupon, ResponseIssueCoupon } from '../types';
 import { Logger } from 'winston';
+import CouponMetadataCache from './CouponMetadataCache';
 
 class IssueCouponService {
+  private metadataCache: CouponMetadataCache;
+
   constructor(
     private couponModel: CouponModel,
     private logger: Logger,
-  ) {}
+    metadataCache?: CouponMetadataCache,
+  ) {
+    this.metadataCache = metadataCache ?? new CouponMetadataCache();
+  }
 
   private async increaseRequestCount(): Promise<void> {
     await this.couponModel.increaseRequestCount();
   }
 
   private async getCouponMetadata(): Promise<CouponMetadata> {
+    const cached = this.metadataCache.get();
+    if (cached) return cached;
+
     const couponMetadata = await this.couponModel.getCouponMetadata();
     if (couponMetadata === null) {
       throw new BadRequestError(couponMessage.NOT_FOUND_COUPON_METADATA);
     }
-    return JSON.parse(couponMetadata) as CouponMetadata;
+    const parsed = JSON.parse(couponMetadata) as CouponMetadata;
+    this.metadataCache.set(parsed);
+    return parsed;
   }
 
   private checkCorrectTime(startTime: string, endTime: string): void {
