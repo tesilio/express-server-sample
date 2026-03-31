@@ -1,18 +1,30 @@
-import dependencyInjectorLoader from './dependencyInjector';
 import expressLoader from './express';
-import Logger from './logger';
+import createRedisClient from './ioredis';
+import LoggerInstance from './logger';
 import CouponModel from '../models/redis/CouponModel';
+import IssueCouponService from '../services/IssueCouponService';
+import IndexService from '../services/IndexService';
+import express from 'express';
+import Redis from 'ioredis';
 
-/**
- * 로더 설정
- * @param {any} expressApp - 익스프레스 앱
- * @returns {Promise<void>}
- */
-export default async ({ expressApp }: any): Promise<void> => {
-  const redisModels = [CouponModel];
-  await dependencyInjectorLoader({ redisModels });
-  Logger.info('✌️ Dependency Injector loaded');
+export interface AppDependencies {
+  indexService: IndexService;
+  issueCouponService: IssueCouponService;
+  redisClient: Redis;
+}
 
-  await expressLoader({ app: expressApp });
-  Logger.info('✌️ Express loaded');
+const initApp = (app: express.Application): AppDependencies => {
+  const redisClient = createRedisClient();
+  const couponModel = new CouponModel(redisClient);
+  const issueCouponService = new IssueCouponService(couponModel, LoggerInstance);
+  const indexService = new IndexService();
+
+  LoggerInstance.info('Dependency injection initialized');
+
+  expressLoader({ app, indexService, issueCouponService });
+  LoggerInstance.info('Express loaded');
+
+  return { indexService, issueCouponService, redisClient };
 };
+
+export default initApp;

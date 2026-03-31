@@ -1,15 +1,23 @@
-jest.mock('ioredis', () => require('ioredis-mock'));
 import IssueCouponService from '../IssueCouponService';
 import CouponModel from '../../models/redis/CouponModel';
 import { Logger } from 'winston';
-import { RequestIssueCoupon } from '@types';
+import { RequestIssueCoupon } from '../../types';
 import { BadRequestError, NotFoundError } from '../../utils/customErrors';
 import couponMessage from '../../messages/coupon.message';
 
 describe('IssueCouponService 테스트', () => {
   let issueCouponService: IssueCouponService;
-  let mockCouponModel: Partial<CouponModel>;
-  let mockLogger: Partial<Logger>;
+  let mockCouponModel: jest.Mocked<
+    Pick<
+      CouponModel,
+      | 'getAlreadyIssuedQuantityAndIssue'
+      | 'getCouponMetadata'
+      | 'cancelIssuing'
+      | 'increaseRequestCount'
+      | 'increaseIssuedCouponCount'
+    >
+  >;
+  let mockLogger: Pick<Logger, 'error'>;
 
   beforeEach(() => {
     const fakeDate = new Date(2024, 0, 1, 9, 0);
@@ -21,21 +29,27 @@ describe('IssueCouponService 테스트', () => {
         .mockResolvedValue(
           '{"startTime":"2024-01-01T00:00:00.000Z","endTime":"2024-12-31T23:59:59.999Z","quantity":100}',
         ),
-      cancelIssuing: jest.fn().mockResolvedValue(true),
+      cancelIssuing: jest.fn().mockResolvedValue(1),
+      increaseRequestCount: jest.fn().mockResolvedValue(1),
+      increaseIssuedCouponCount: jest.fn().mockResolvedValue(1),
     };
     mockLogger = {
       error: jest.fn(),
     };
     issueCouponService = new IssueCouponService(
-      mockCouponModel as CouponModel,
+      mockCouponModel as unknown as CouponModel,
       mockLogger as Logger,
     );
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
   });
 
   describe('exec 테스트', () => {
     it('사용자가 쿠폰을 발급받는다.', async () => {
       const requestIssueCoupon: RequestIssueCoupon = { userId: 'test' };
-      mockCouponModel.getAlreadyIssuedQuantityAndIssue = jest.fn().mockResolvedValue({
+      mockCouponModel.getAlreadyIssuedQuantityAndIssue.mockResolvedValue({
         alreadyIssuedQuantity: 0,
         issued: true,
       });
@@ -56,7 +70,7 @@ describe('IssueCouponService 테스트', () => {
 
     it('쿠폰이 모두 소진되었다면 NotFoundError 에러가 발생한다.', async () => {
       const requestIssueCoupon: RequestIssueCoupon = { userId: 'test' };
-      mockCouponModel.getAlreadyIssuedQuantityAndIssue = jest.fn().mockResolvedValue({
+      mockCouponModel.getAlreadyIssuedQuantityAndIssue.mockResolvedValue({
         alreadyIssuedQuantity: 100,
         issued: true,
       });
@@ -68,7 +82,7 @@ describe('IssueCouponService 테스트', () => {
 
     it('사용자가 이미 쿠폰을 발급 받았다면 BadRequestError 에러가 발생한다.', async () => {
       const requestIssueCoupon: RequestIssueCoupon = { userId: 'test' };
-      mockCouponModel.getAlreadyIssuedQuantityAndIssue = jest.fn().mockResolvedValue({
+      mockCouponModel.getAlreadyIssuedQuantityAndIssue.mockResolvedValue({
         alreadyIssuedQuantity: 1,
         issued: false,
       });

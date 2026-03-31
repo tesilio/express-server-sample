@@ -1,8 +1,8 @@
 import winston from 'winston';
 import config from '../config';
 
-const transports = [];
-if (process.env.NODE_ENV !== 'development') {
+const transports: winston.transport[] = [];
+if (config.env !== 'development') {
   transports.push(new winston.transports.Console());
 } else {
   transports.push(
@@ -12,10 +12,6 @@ if (process.env.NODE_ENV !== 'development') {
   );
 }
 
-/**
- * 로거 인스턴스
- * @type {winston.Logger}
- */
 const LoggerInstance: winston.Logger = winston.createLogger({
   level: config.logs.level,
   levels: winston.config.npm.levels,

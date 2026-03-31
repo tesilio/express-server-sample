@@ -14,5 +14,5 @@ export default {
   NOT_FOUND_COUPON_METADATA: {
     message: '발급할 쿠폰 정보가 없습니다.',
     code: 'ERR000005',
-  }
+  },
 };

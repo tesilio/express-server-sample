@@ -1,23 +1,11 @@
-import { ResponseIndexHelloWorld } from '@types';
-import { Service } from 'typedi';
+import { ResponseIndexHelloWorld } from '../types';
 
-/**
- * 인덱스 서비스
- */
-@Service()
-export default class IndexService {
-  /**
-   * 생성자
-   */
-  constructor() {}
-
-  /**
-   * Hello World!
-   * @returns {Promise<ResponseIndexHelloWorld>}
-   */
+class IndexService {
   async helloWorld(): Promise<ResponseIndexHelloWorld> {
     return {
       message: 'Hello World!',
     };
   }
 }
+
+export default IndexService;

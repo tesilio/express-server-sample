@@ -1,23 +1,22 @@
 import { Router, Request, Response, NextFunction } from 'express';
-import { Container } from 'typedi';
-import IndexServiceService from '../../../services/IndexService';
+import IndexService from '../../../services/IndexService';
 import customResponse from '../../../utils/customResponse';
 
-/**
- * 인덱스 라우터 설정
- * @param {e.Router} app
- */
-export default (app: Router) => {
-  app.use('/v1', app);
+const createIndexRouter = (indexService: IndexService): Router => {
+  const router = Router();
 
-  /**
-   * Home, Hello World!
-   */
-  app.get('/', async (_request: Request, response: Response, _next: NextFunction) => {
-    const indexServiceInstance = Container.get(IndexServiceService);
-    return indexServiceInstance
-      .helloWorld()
-      .then(customResponse.respondWithOK(response))
-      .catch(customResponse.handleError(response));
+  router.get('/', async (_req: Request, res: Response, _next: NextFunction) => {
+    try {
+      const result = await indexService.helloWorld();
+      customResponse.respondWithOK(res)(result);
+    } catch (err) {
+      customResponse.handleError(res)(
+        err as { status?: number; code?: string; name?: string; message?: string },
+      );
+    }
   });
+
+  return router;
 };
+
+export default createIndexRouter;

@@ -1,21 +1,40 @@
+import { z } from 'zod';
 import dotenv from 'dotenv';
 
 process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
 const envFound = dotenv.config();
 if (envFound.error) {
-  throw new Error(`⚠️ Couldn't find .env file ⚠️`);
+  throw new Error(`Couldn't find .env file`);
 }
 
-export default {
-  env: process.env.NODE_ENV,
+const envSchema = z.object({
+  NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
+  LOG_LEVEL: z.string().default('silly'),
+  PORT: z.coerce.number().int().positive().default(3000),
+  REDIS_HOST: z.string().default('localhost'),
+  REDIS_PORT: z.coerce.number().int().positive().default(6379),
+  REDIS_DB: z.coerce.number().int().min(0).default(0),
+});
+
+const parsed = envSchema.safeParse(process.env);
+if (!parsed.success) {
+  throw new Error(`Invalid environment variables: ${parsed.error.flatten().fieldErrors}`);
+}
+
+const env = parsed.data;
+
+const config = {
+  env: env.NODE_ENV,
   logs: {
-    level: process.env.LOG_LEVEL || 'silly',
+    level: env.LOG_LEVEL,
   },
-  port: parseInt(process.env.PORT || '3000', 10),
+  port: env.PORT,
   redis: {
-    host: process.env.REDIS_HOST ?? 'localhost',
-    port: parseInt(process.env.REDIS_PORT ?? '6379', 10),
-    db: parseInt(process.env.REDIS_DB ?? '0', 10),
+    host: env.REDIS_HOST,
+    port: env.REDIS_PORT,
+    db: env.REDIS_DB,
   },
-};
+} as const;
+
+export default config;

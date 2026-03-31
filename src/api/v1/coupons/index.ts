@@ -1,30 +1,27 @@
 import { Router, Request, Response, NextFunction } from 'express';
-import { Container } from 'typedi';
 import customResponse from '../../../utils/customResponse';
 import IssueCouponService from '../../../services/IssueCouponService';
-import { couponIssueBodyValidator } from './validator';
-import { validationResult } from 'express-validator';
+import { validateCouponIssueBody } from './validator';
 
-/**
- * 쿠폰 라우터 설정
- * @param {e.Router} app
- */
-export default (app: Router) => {
-  app.use('/v1/coupons', app);
+const createCouponRouter = (issueCouponService: IssueCouponService): Router => {
+  const router = Router();
 
-  /**
-   * 쿠폰 발급
-   */
-  app.post(
+  router.post(
     '/issues',
-    couponIssueBodyValidator,
-    async (request: Request, response: Response, _next: NextFunction) => {
-      const validateErrors = validationResult(request);
-      const issueCouponService = Container.get(IssueCouponService);
-      return issueCouponService
-        .exec(request.body)
-        .then(customResponse.respondWithOK(response))
-        .catch(customResponse.handleError(response));
+    validateCouponIssueBody,
+    async (_req: Request, res: Response, _next: NextFunction) => {
+      try {
+        const result = await issueCouponService.exec(_req.body);
+        customResponse.respondWithOK(res)(result);
+      } catch (err) {
+        customResponse.handleError(res)(
+          err as { status?: number; code?: string; name?: string; message?: string },
+        );
+      }
     },
   );
+
+  return router;
 };
+
+export default createCouponRouter;
