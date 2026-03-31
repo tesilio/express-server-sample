@@ -4,6 +4,7 @@ import helmet from 'helmet';
 import compression from 'compression';
 import { rateLimit } from 'express-rate-limit';
 import createApiRoutes from '../api';
+import config from '../config';
 import { NotFoundError, BaseHttpError } from '../utils/customErrors';
 import requestIdMiddleware from '../middlewares/requestId';
 import requestLoggerMiddleware from '../middlewares/requestLogger';
@@ -19,7 +20,7 @@ interface ExpressLoaderDeps {
 
 const couponRateLimiter = rateLimit({
   windowMs: 60 * 1000,
-  limit: 10,
+  limit: config.rateLimit,
   standardHeaders: 'draft-7',
   legacyHeaders: false,
   message: {

@@ -12,6 +12,7 @@ const envSchema = z.object({
   REDIS_HOST: z.string().default('localhost'),
   REDIS_PORT: z.coerce.number().int().positive().default(6379),
   REDIS_DB: z.coerce.number().int().min(0).default(0),
+  RATE_LIMIT: z.coerce.number().int().positive().default(10),
 });
 
 const parsed = envSchema.safeParse(process.env);
@@ -32,6 +33,7 @@ const config = {
     port: env.REDIS_PORT,
     db: env.REDIS_DB,
   },
+  rateLimit: env.RATE_LIMIT,
 } as const;
 
 export default config;
